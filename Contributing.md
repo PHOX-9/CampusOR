@@ -47,6 +47,8 @@ cp .env.example .env
 
 # Start Server
 npm run dev
+npm run build
+npm run start
 # Backend runs on: http://localhost:5000
 ```
 ### 3. Frontend Setup

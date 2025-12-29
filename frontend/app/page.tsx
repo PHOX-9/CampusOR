@@ -1,11 +1,5 @@
-"use client";
-;
+import { redirect } from "next/navigation";
 
-export default function Home() {
-
-  return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-      <h1 className="text-4xl font-bold">CampusOR</h1>
-    </main>
-  );
+export default function Page() {
+  redirect("/landing");
 }
