@@ -1,0 +1,75 @@
+
+[
+	{
+		"queueId": "Q-1001",
+		"queueName": "Registrar Office",
+		"location": "Admin Block",
+		"counterNumber": 4,
+		"queueLength": 7,
+		"waitTime": 14,
+		"status": "open"
+	},
+	{
+		"queueId": "Q-1002",
+		"queueName": "Main Cafeteria",
+		"location": "Cafeteria",
+		"counterNumber": 6,
+		"queueLength": 3,
+		"waitTime": 12,
+		"status": "open"
+	},
+	{
+		"queueId": "Q-1003",
+		"queueName": "Admissions Office",
+		"location": "Admin Block",
+		"counterNumber": 2,
+		"queueLength": 10,
+		"waitTime": 20,
+		"status": "open"
+	},
+	{
+		"queueId": "Q-1004",
+		"queueName": "Registrar - Room 210",
+		"location": "Admin Block",
+		"counterNumber": 1,
+		"queueLength": 2,
+		"waitTime": 8,
+		"status": "open"
+	},
+	{
+		"queueId": "Q-1005",
+		"queueName": "Health Center",
+		"location": "Clinic",
+		"counterNumber": 3,
+		"queueLength": 1,
+		"waitTime": 3,
+		"status": "open"
+	},
+	{
+		"queueId": "Q-1006",
+		"queueName": "IT Support Desk",
+		"location": "Admin Block",
+		"counterNumber": 2,
+		"queueLength": 5,
+		"waitTime": 15,
+		"status": "paused"
+	},
+	{
+		"queueId": "Q-1007",
+		"queueName": "Sports Complex Entrance",
+		"location": "Sports Complex",
+		"counterNumber": 0,
+		"queueLength": 12,
+		"waitTime": 25,
+		"status": "open"
+	},
+	{
+		"queueId": "Q-1008",
+		"queueName": "Hostel Warden Office",
+		"location": "Hostel",
+		"counterNumber": 2,
+		"queueLength": 4,
+		"waitTime": 9,
+		"status": "closed"
+	}
+]
