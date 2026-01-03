@@ -10,6 +10,10 @@ export interface RegisterDetails {
   email: string;
   password: string;
   role?: UserRole;
+  // Role-specific fields
+  collegeEmail?: string; // Required for "user" role
+  department?: string; // Required for "operator" role
+  position?: string; // Required for "operator" role
 }
 
 export interface SafeUser {
@@ -17,6 +21,9 @@ export interface SafeUser {
   name: string;
   email: string;
   role: UserRole;
+  collegeEmail?: string;
+  department?: string;
+  position?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,7 +31,24 @@ export interface SafeUser {
 export const registerUser = async (
   input: RegisterDetails
 ): Promise<SafeUser> => {
-  const { name, email, password, role } = input;
+  const { name, email, password, role, collegeEmail, department, position } = input;
+  
+  // Determine final role (default to "user")
+  const finalRole = role || "user";
+
+  // Validate role-specific required fields
+  if (finalRole === "user") {
+    if (!collegeEmail) {
+      throw new Error("College email is required for user role");
+    }
+  } else if (finalRole === "operator") {
+    if (!department) {
+      throw new Error("Department is required for operator role");
+    }
+    if (!position) {
+      throw new Error("Position is required for operator role");
+    }
+  }
 
   // 1)check if email already exists
   const existing = await User.findOne({ email });
@@ -36,20 +60,44 @@ export const registerUser = async (
   // 2 : Hash password
   const hashedPassword = await bcrypt.hash(password, SALT);
 
-  // 3) Create user in DB
-  const user = await User.create({
+  // 3) Prepare user data with role-specific fields
+  const userData: {
+    name: string;
+    email: string;
+    password: string;
+    role: UserRole;
+    collegeEmail?: string;
+    department?: string;
+    position?: string;
+  } = {
     name,
     email,
     password: hashedPassword,
-    role: role || "user",
-  });
+    role: finalRole,
+  };
 
-  // 4) safe data (no password)
+  // Add role-specific fields conditionally
+  if (finalRole === "user" && collegeEmail) {
+    userData.collegeEmail = collegeEmail;
+  } else if (finalRole === "operator") {
+    if (department) userData.department = department;
+    if (position) userData.position = position;
+  }
+
+  // 4) Create user in DB
+  const userResult = await User.create(userData);
+  // Mongoose create can return array or single doc, ensure we have single doc
+  const user = Array.isArray(userResult) ? userResult[0] : userResult;
+
+  // 5) safe data (no password)
   return {
     id: user._id.toString(),
     name: user.name,
     email: user.email,
     role: user.role,
+    collegeEmail: user.collegeEmail,
+    department: user.department,
+    position: user.position,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
@@ -88,6 +136,9 @@ export const loginUser = async (input: LoginDetails): Promise<LoginResult> => {
     name: user.name,
     email: user.email,
     role: user.role,
+    collegeEmail: user.collegeEmail,
+    department: user.department,
+    position: user.position,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
