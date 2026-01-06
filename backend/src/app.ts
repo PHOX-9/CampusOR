@@ -7,14 +7,14 @@ import operatorRouter from "./modules/operator/operator.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
 import notificationRouter from "./modules/notifications/email.route.js";
 import generateQueueRouter from "./modules/generateQueue/generateQueue.route.js";
-
+import { env } from "./config/env.js";
 
 const app = express();
 
 // [ADDED] CORS Middleware
 // This allows your frontend (port 3000) to talk to this backend
 app.use(cors({
-  origin: "http://localhost:3000", // Allow only your frontend
+  origin: env.FRONTEND_URL, // Allow only your frontend
   credentials: true,               // Allow cookies/tokens if needed
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 }));

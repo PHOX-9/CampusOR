@@ -77,7 +77,15 @@ class ApiService {
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    // Handle possible empty or non-JSON responses gracefully
+    if (response.status === 204) {
+      return null;
+    }
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.toLowerCase().includes('application/json')) {
+      return null;
+    }
+    return response.json().catch(() => null);
   }
 
   async delete(endpoint: string, includeAuth: boolean = true) {
