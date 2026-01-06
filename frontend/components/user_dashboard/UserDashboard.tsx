@@ -1,5 +1,5 @@
 "use client";
-
+import { useQueueToasts } from "@/app/services/useToast";
 import { useState, useEffect } from "react";
 import {
   userDashboardMock,
@@ -90,6 +90,7 @@ export default function UserDashboard({
   const [formattedTime, setFormattedTime] = useState<string>("");
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  useQueueToasts(currentState)
 
   const getMockDataForState = (state: MockState): DashboardData => {
     switch (state) {
