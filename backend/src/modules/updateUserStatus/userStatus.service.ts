@@ -1,6 +1,10 @@
 import { User } from "../auth/user.model.js";
 import { Queue } from "../queue/queue.model.js";
 import { Types } from "mongoose";
+import {
+  sendQueueJoinedEmail,
+  sendQueueFinishedEmail,
+} from "../notifications/email.service.js";
 
 interface CheckInQueueInput {
     userId: string;
@@ -52,6 +56,13 @@ export const checkInQueue = async ({ userId, queueId }: CheckInQueueInput) => {
     user.currentQueue = queue._id;
     await user.save();
 
+    // Send queue joined email (non-blocking)
+    sendQueueJoinedEmail(user.email, user.name, queue.name, queue.location).catch(
+      (error) => {
+        console.error("Failed to send queue joined email:", error);
+      }
+    );
+
     return {
         message: "Successfully joined the queue",
         currentQueue: queueId,
@@ -76,6 +87,9 @@ export const updateCheckInStatus = async ({
 
     const completedQueue = user.currentQueue;
 
+    // Get queue info before clearing it (for email)
+    const queue = await Queue.findById(completedQueue);
+
     // Prevent duplicate history entries
     user.pastQueues = user.pastQueues || [];
     if (!user.pastQueues.some(q => q.equals(completedQueue))) {
@@ -88,11 +102,14 @@ export const updateCheckInStatus = async ({
 
     await user.save();
 
-    // 📧 Queue finished email goes here
-    // sendQueueFinishedEmail(...) ← existing notification logic
-
-    // 🗂 History update logic hook goes here
-    // updateQueueHistory(...)
+    // Send queue finished email (non-blocking)
+    if (queue) {
+      sendQueueFinishedEmail(user.email, user.name, queue.name, queue.location).catch(
+        (error) => {
+          console.error("Failed to send queue finished email:", error);
+        }
+      );
+    }
 
     return {
         message: "Queue completed successfully",
